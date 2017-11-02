@@ -1,4 +1,4 @@
-package com.hzh.easy.cache;
+package com.hzh.easy.cache.base;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -33,13 +33,14 @@ public class CacheOperate {
 
     public static CacheOperate init(Context context, int appVersionCode) {
         if (isInited) {
-            return getInstance();
+            return SingletonHolder.instance;
         } else {
-            CacheOperate instance = getInstance();
+            CacheOperate instance = SingletonHolder.instance;
             instance.context = context;
             instance.appVersionCode = appVersionCode;
             instance.mLruCache = new LruCache<String, Object>(5 * M);
             instance.mDiskCache = ACache.get(context);
+            isInited = true;
             return instance;
         }
     }

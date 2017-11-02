@@ -2,8 +2,6 @@ package com.hzh.easy.cache.base;
 
 import android.support.v4.util.ArrayMap;
 
-import com.hzh.easy.cache.CacheOperate;
-
 import java.io.Serializable;
 
 /**

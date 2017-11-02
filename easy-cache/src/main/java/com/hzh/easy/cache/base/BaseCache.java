@@ -3,7 +3,6 @@ package com.hzh.easy.cache.base;
 import android.support.annotation.Nullable;
 import android.util.LruCache;
 
-import com.hzh.easy.cache.CacheOperate;
 import com.hzh.easy.cache.util.ACache;
 
 import java.io.Serializable;
