@@ -1,14 +1,12 @@
 package com.hzh.easy.cache.sample.bean;
 
 /**
- * @包名 com.hzh.easy.cache.sample.cache
- * @类名 UserInfo
- * @创建时间 on 2017/11/2  下午12:09
- * @作者 子和
- * @类的描述 用户信息bean
- * Email hezihao@linghit.com
- * 最后更新者 UserInfo
- * 最后修改时间：2017/11/2  下午12:09
+ * @package com.hzh.easy.cache.sample.cache
+ * @fileName UserInfo
+ * @date on 2017/11/2  下午12:09
+ * @auther 子和
+ * @descirbe 用户信息bean
+ * @email hezihao@linghit.com
  */
 
 public class UserInfo extends Base {

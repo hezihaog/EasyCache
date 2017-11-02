@@ -543,7 +543,7 @@ public class ACache {
     /**
      * @author 杨福海（michael） www.yangfuhai.com
      * @version 1.0
-     * @title 缓存管理器
+     * 缓存管理器
      */
     public class ACacheManager {
         private final AtomicLong cacheSize;

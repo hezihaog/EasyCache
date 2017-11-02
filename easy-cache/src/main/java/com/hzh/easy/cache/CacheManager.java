@@ -5,17 +5,6 @@ import android.content.pm.PackageManager;
 
 import com.hzh.easy.cache.base.CacheOperate;
 
-/**
- * @包名 com.hzh.easy.cache
- * @类名 CacheManager
- * @创建时间 on 2017/11/2  下午2:42
- * @作者 子和
- * @类的描述 缓存管理
- * Email hezihao@linghit.com
- * 最后更新者 CacheManager
- * 最后修改时间：2017/11/2  下午2:42
- */
-
 public class CacheManager {
     private CacheManager() {
     }
