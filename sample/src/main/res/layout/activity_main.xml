@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:src="@mipmap/flash" />
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:hint="name"
+            android:maxLength="25"
+            android:maxLines="1"
+            android:minLines="1"
+            android:singleLine="true"
+            android:ellipsize="end"
+            tools:text="Barry Allen" />
+
+        <EditText
+            android:id="@+id/sign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:hint="sign"
+            android:maxLength="40"
+            android:maxLines="1"
+            android:minLines="1"
+            android:singleLine="true"
+            android:ellipsize="end"
+            tools:text="My name is Barry Allen and I am the fastest man alive" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp">
+
+            <Button
+                android:id="@+id/saveCache"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="save" />
+
+            <Button
+                android:id="@+id/readCache"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="read" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="15sp"
+            tools:text="读取到的信息：" />
+    </LinearLayout>
+</FrameLayout>
