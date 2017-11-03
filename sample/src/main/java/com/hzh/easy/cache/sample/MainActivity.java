@@ -4,7 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -22,6 +22,8 @@ import com.hzh.easy.cache.sample.bean.UserInfo;
 import com.hzh.easy.cache.sample.cache.UserInfoCache;
 import com.hzh.easy.cache.sample.cache.params.UserInfoCacheParams;
 import com.hzh.easy.cache.sample.util.AsyncExecutor;
+import com.hzh.easy.cache.sample.util.SoftKeyBoardUtil;
+import com.hzh.easy.cache.sample.widget.EditInputDialog;
 import com.hzh.fast.permission.FastPermission;
 import com.hzh.fast.permission.callback.PermissionCallback;
 
@@ -29,6 +31,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private int focusHashCode;
 
     private EditText nameInput;
     private EditText signInput;
@@ -82,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
         readCache.setOnClickListener(listener);
     }
 
+    private FragmentActivity getActivity() {
+        return this;
+    }
+
     /**
      * 检查用户是否将姓名和签名都输入
      */
@@ -109,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         }
         final String name = nameInput.getText().toString().trim();
         final String sign = signInput.getText().toString().trim();
-        AsyncExecutor.getInstance().execute(this, new AsyncExecutor.AsyncCallback<Boolean>() {
+        AsyncExecutor.getInstance().execute(getActivity(), new AsyncExecutor.AsyncCallback<Boolean>() {
             @Override
             protected void runBefore() {
                 super.runBefore();
@@ -120,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
             protected Boolean running() {
                 boolean isSuccess;
                 try {
-                    SystemClock.sleep(600);
                     UserInfoCache infoCache = CacheFactory.create(UserInfoCache.class);
                     UserInfoCacheParams params = new UserInfoCacheParams();
                     params.putUserId(String.valueOf(name.hashCode()));
@@ -150,39 +156,97 @@ public class MainActivity extends AppCompatActivity {
      * 从缓存中读取用户信息
      */
     private void read() {
-        final String name = nameInput.getText().toString().trim();
-        if (TextUtils.isEmpty(name)) {
-            toastMsg("姓名不能为空");
-            return;
+        if (nameInput.isFocused()) {
+            focusHashCode = nameInput.hashCode();
         }
-        AsyncExecutor.getInstance().execute(this, new AsyncExecutor.AsyncCallback<UserInfo>() {
+        if (signInput.isFocused()) {
+            focusHashCode = signInput.hashCode();
+        }
+        final EditInputDialog dialog = new EditInputDialog(getActivity());
+        dialog.setOnClickListener(new EditInputDialog.OnClickListener() {
             @Override
-            protected void runBefore() {
-                super.runBefore();
-                showProgress();
+            public void onClickConfirm() {
+                final String name = dialog.getInput();
+                if (TextUtils.isEmpty(name)) {
+                    toastMsg("姓名不能为空");
+                    return;
+                }
+                AsyncExecutor.getInstance().execute(new AsyncExecutor.AsyncCallback<UserInfo>() {
+                    @Override
+                    protected void runBefore() {
+                        super.runBefore();
+                        dialog.dismiss();
+                        showProgress();
+                    }
+
+                    @Override
+                    protected UserInfo running() {
+                        UserInfoCache infoCache = CacheFactory.create(UserInfoCache.class);
+                        UserInfoCacheParams params = new UserInfoCacheParams()
+                                .putUserId(String.valueOf(name.hashCode()));
+                        return infoCache.get(params);
+                    }
+
+                    @Override
+                    protected void runAfter(UserInfo info) {
+                        hideProgress();
+                        if (null == info) {
+                            toastMsg("查询成功");
+                            result.setText("无该用户信息，请确认后再试");
+                        } else {
+                            result.setText("查询到用户：" + "name: "
+                                    + info.getName() + " sign：" + info.getSign());
+                        }
+                    }
+                });
             }
 
             @Override
-            protected UserInfo running() {
-                SystemClock.sleep(600);
-                UserInfoCache infoCache = CacheFactory.create(UserInfoCache.class);
-                UserInfoCacheParams params = new UserInfoCacheParams()
-                        .putUserId(String.valueOf(name.hashCode()));
-                return infoCache.get(params);
+            public void onClickCancel() {
+                dialog.dismiss();
             }
-
+        });
+        dialog.setOnDisplayChangeListener(new EditInputDialog.OnDisplayChangeListener() {
             @Override
-            protected void runAfter(UserInfo info) {
-                hideProgress();
-                if (null == info) {
-                    toastMsg("查询成功");
-                    result.setText("无该用户信息，请确认后再试");
+            public void onDisplayChange(boolean isVisible) {
+                if (isVisible) {
+                    setInputFocus(false);
+                    SoftKeyBoardUtil.hideSoftKeyboard(getActivity(), getWindow().getDecorView());
+                    AppContext.getInstance().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            SoftKeyBoardUtil.showSoftKeyboard(getActivity(), dialog.getInputEditText());
+                        }
+                    }, 400);
                 } else {
-                    result.setText("查询到用户：\n" + "name: "
-                            + info.getName() + "\n" + "sign：" + info.getSign());
+                    setInputFocus(true);
+                    AppContext.getInstance().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (focusHashCode == nameInput.hashCode()) {
+                                nameInput.requestFocus();
+                            }
+                            if (focusHashCode == signInput.hashCode()) {
+                                signInput.requestFocus();
+                            }
+                        }
+                    }, 100);
                 }
             }
         });
+        dialog.show();
+    }
+
+    /**
+     * 设置界面EditText的焦点
+     *
+     * @param isVisible
+     */
+    private void setInputFocus(boolean isVisible) {
+        nameInput.setFocusable(isVisible);
+        nameInput.setFocusableInTouchMode(isVisible);
+        signInput.setFocusable(isVisible);
+        signInput.setFocusableInTouchMode(isVisible);
     }
 
     private void toastMsg(String msg) {
@@ -210,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
      * @param grantedAfterRun 授权之后的动作
      */
     private void requestPermission(String[] perms, final Runnable grantedAfterRun) {
-        FastPermission.getInstance().request(MainActivity.this, new PermissionCallback() {
+        FastPermission.getInstance().request(getActivity(), new PermissionCallback() {
             @Override
             public void onGranted() {
                 if (grantedAfterRun != null) {
@@ -220,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDenied(final List<String> perms) {
-                new AlertDialog.Builder(MainActivity.this)
+                new AlertDialog.Builder(getActivity())
                         .setTitle("申请权限")
                         .setMessage("请允许app申请的所有权限，以便正常使用")
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
