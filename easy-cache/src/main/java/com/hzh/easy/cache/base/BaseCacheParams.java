@@ -24,10 +24,10 @@ public abstract class BaseCacheParams implements ICacheParams {
         if (versionSymbol != null) {
             return versionSymbol;
         } else {
-            new StringBuilder()
+            versionSymbol = new StringBuilder()
                     .append("v")
                     .append(getVersionCode())
-                    .append("_");
+                    .append("_").toString();
             return versionSymbol;
         }
     }

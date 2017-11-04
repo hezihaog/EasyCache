@@ -27,10 +27,10 @@ public abstract class BaseCache<P extends BaseCacheParams> implements ICache {
         if (versionSymbol != null) {
             return versionSymbol;
         } else {
-            new StringBuilder()
+            versionSymbol = new StringBuilder()
                     .append("v")
                     .append(getVersionCode())
-                    .append("_");
+                    .append("_").toString();
             return versionSymbol;
         }
     }

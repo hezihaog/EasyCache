@@ -39,4 +39,13 @@ public class UserInfo extends Base {
     public void setSign(String sign) {
         this.sign = sign;
     }
+
+    @Override
+    public String toString() {
+        return new StringBuilder()
+                .append("name ::: ")
+                .append(" -- ")
+                .append(" sign ::: " + sign)
+                .toString();
+    }
 }
