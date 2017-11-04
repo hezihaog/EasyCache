@@ -4,12 +4,12 @@ package com.hzh.easy.cache.config;
 import android.content.Context;
 
 /**
- * @package com.hzh.easy.cache.config
- * @fileName CacheConfig
- * @date on 2017/11/4  下午2:15
- * @auther zihe
- * @descirbe 缓存配置器
- * @email hezihao@linghit.com
+// * @package com.hzh.easy.cache.config
+// * @fileName CacheConfig
+// * @date on 2017/11/4  下午2:15
+// * @auther zihe
+// * @descirbe 缓存配置器
+// * @email hezihao@linghit.com
  */
 
 public class CacheConfig {
