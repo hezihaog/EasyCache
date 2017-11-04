@@ -7,6 +7,7 @@ import android.support.annotation.StyleRes;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -42,6 +43,7 @@ public class EditInputDialog extends Dialog implements View.OnClickListener {
 
     private void init() {
         layout = LayoutInflater.from(getContext()).inflate(R.layout.view_edit_input_dialog, null);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(layout);
         input = layout.findViewById(R.id.input);
         confirm = layout.findViewById(R.id.confirm);

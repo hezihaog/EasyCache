@@ -79,6 +79,11 @@ public class ACache {
         return get(cacheDir, MAX_SIZE, MAX_COUNT);
     }
 
+    public static ACache get(Context ctx, String cacheName, long max_zise, int max_count) {
+        File f = new File(ctx.getCacheDir(), cacheName);
+        return get(f, max_zise, max_count);
+    }
+
     public static ACache get(Context ctx, long max_zise, int max_count) {
         File f = new File(ctx.getCacheDir(), "ACache");
         return get(f, max_zise, max_count);
@@ -543,7 +548,7 @@ public class ACache {
     /**
      * @author 杨福海（michael） www.yangfuhai.com
      * @version 1.0
-     * 缓存管理器
+     *          缓存管理器
      */
     public class ACacheManager {
         private final AtomicLong cacheSize;

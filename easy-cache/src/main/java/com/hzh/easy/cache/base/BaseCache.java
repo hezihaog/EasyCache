@@ -1,9 +1,8 @@
 package com.hzh.easy.cache.base;
 
 import android.support.annotation.Nullable;
-import android.util.LruCache;
 
-import com.hzh.easy.cache.util.ACache;
+import com.hzh.easy.cache.interf.ICache;
 
 import java.io.Serializable;
 
@@ -12,25 +11,28 @@ import java.io.Serializable;
  */
 
 public abstract class BaseCache<P extends BaseCacheParams> implements ICache {
-    protected final CacheOperate operate;
-    protected final ACache mDiskCache;
-    protected final String versionCode;
-    protected final LruCache<String, Object> mLruCache;
+    private String versionSymbol;
 
-    public BaseCache() {
-        operate = getOperate();
-        mLruCache = operate.getLruCache();
-        mDiskCache = operate.getDiskCache();
-        versionCode = "v_".concat(String.valueOf(getVersionCode()).concat("_"));
-    }
-
-    @Override
     public CacheOperate getOperate() {
         return CacheOperate.getInstance();
     }
 
-    protected int getVersionCode() {
-        return getOperate().getAppVersionCode();
+    @Override
+    public int getVersionCode() {
+        return getOperate().getVersionCode();
+    }
+
+    @Override
+    public String getVersionSymbol() {
+        if (versionSymbol != null) {
+            return versionSymbol;
+        } else {
+            new StringBuilder()
+                    .append("v")
+                    .append(getVersionCode())
+                    .append("_");
+            return versionSymbol;
+        }
     }
 
     public abstract void removeCache(@Nullable P params);

@@ -1,8 +1,9 @@
 package com.hzh.easy.cache.base;
 
-import android.support.v4.util.ArrayMap;
+import com.hzh.easy.cache.interf.ICacheParams;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * Created by Hezihao on 2017/9/8.
@@ -10,27 +11,52 @@ import java.io.Serializable;
  */
 
 public abstract class BaseCacheParams implements ICacheParams {
-    protected final String versionSymbol;
+    private HashMap<String, Serializable> paramsMap;
+    private String versionSymbol;
 
-    public BaseCacheParams() {
-        versionSymbol = "v_".concat(String.valueOf(getVersionCode()).concat("_"));
+    @Override
+    public int getVersionCode() {
+        return CacheOperate.getInstance().getVersionCode();
     }
 
-    private class CacheMap extends ArrayMap implements Serializable {
+    @Override
+    public String getVersionSymbol() {
+        if (versionSymbol != null) {
+            return versionSymbol;
+        } else {
+            new StringBuilder()
+                    .append("v")
+                    .append(getVersionCode())
+                    .append("_");
+            return versionSymbol;
+        }
     }
 
-    private CacheMap paramsMap = new CacheMap();
-
-    protected static int getVersionCode() {
-        return CacheOperate.getInstance().getAppVersionCode();
+    private HashMap<String, Serializable> getParamsMap() {
+        if (paramsMap == null) {
+            paramsMap = new HashMap<String, Serializable>();
+        }
+        return paramsMap;
     }
 
-    protected <P extends BaseCacheParams> P put(String key, Serializable target) {
-        paramsMap.put(key, target);
+    @Override
+    public <P extends ICacheParams> P put(String key, Serializable target) {
+        getParamsMap().put(key, target);
         return (P) this;
     }
 
-    protected <T extends Serializable> T get(String key) {
-        return (T) paramsMap.get(key);
+    @Override
+    public <T extends Serializable> T get(String key) {
+        return get(key, null);
+    }
+
+    @Override
+    public <T extends Serializable> T get(String key, Serializable defaultValue) {
+        T value = (T) getParamsMap().get(key);
+        if (value == null) {
+            return (T) defaultValue;
+        } else {
+            return value;
+        }
     }
 }

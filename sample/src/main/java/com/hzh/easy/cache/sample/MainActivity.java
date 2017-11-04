@@ -190,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     protected void runAfter(UserInfo info) {
                         hideProgress();
+                        toastMsg("查询成功，请查看结果");
                         if (null == info) {
-                            toastMsg("查询成功");
                             result.setText("无该用户信息，请确认后再试");
                         } else {
                             result.setText("查询到用户：" + "name: "

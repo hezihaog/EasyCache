@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.LruCache;
 
+import com.hzh.easy.cache.config.CacheConfig;
 import com.hzh.easy.cache.util.ACache;
 
 import java.io.Serializable;
@@ -17,11 +18,10 @@ import java.util.List;
  */
 
 public class CacheOperate {
-    private static final int M = 1024 * 1024;
     private LruCache<String, Object> mLruCache;
     private ACache mDiskCache;
     private Context context;
-    private int appVersionCode;
+    private int versionCode;
     private static boolean isInited = false;
 
     private CacheOperate() {
@@ -31,15 +31,21 @@ public class CacheOperate {
         private static final CacheOperate instance = new CacheOperate();
     }
 
-    public static CacheOperate init(Context context, int appVersionCode) {
+    /**
+     * 初始化，会保存Context，最好传入ApplicationContext
+     *
+     * @return
+     */
+    public static CacheOperate init(CacheConfig config) {
         if (isInited) {
             return SingletonHolder.instance;
         } else {
             CacheOperate instance = SingletonHolder.instance;
-            instance.context = context;
-            instance.appVersionCode = appVersionCode;
-            instance.mLruCache = new LruCache<String, Object>(5 * M);
-            instance.mDiskCache = ACache.get(context);
+            instance.context = config.getContext();
+            instance.versionCode = config.getVersionCode();
+            instance.mLruCache = new LruCache<String, Object>(config.getMemoryMaxSize());
+            instance.mDiskCache = ACache.get(config.getContext(), config.getCacheFileName()
+                    , config.getDiskMaxSize(), config.getDiskMaxCount());
             isInited = true;
             return instance;
         }
@@ -64,8 +70,8 @@ public class CacheOperate {
         return context;
     }
 
-    public int getAppVersionCode() {
-        return appVersionCode;
+    public int getVersionCode() {
+        return versionCode;
     }
 
     /**
@@ -75,12 +81,12 @@ public class CacheOperate {
      * @param list
      * @param <T>
      */
-    public <T extends Serializable> void saveListData(@NonNull String key, @NonNull List<T> list) {
-        saveListData(key, list, -1);
+    public <T extends Serializable> void putListData(@NonNull String key, @NonNull List<T> list) {
+        putListData(key, list, -1);
     }
 
-    public <T extends Serializable> void saveListData(@NonNull String key, @NonNull List<T> list, @Nullable int saveTime) {
-        ArrayList<T> dataList = (ArrayList<T>) list;
+    public <T extends Serializable> void putListData(@NonNull String key, @NonNull List<T> list, @Nullable int saveTime) {
+        ArrayList<T> dataList = new ArrayList<T>(list);
         mLruCache.put(key, list);
         mDiskCache.put(key, dataList, saveTime);
     }
@@ -129,30 +135,51 @@ public class CacheOperate {
     }
 
     /**
-     * 移除磁盘缓存
-     *
-     * @param key
-     * @return
-     */
-    public boolean removeDiskCache(@NonNull String key) {
-        return mDiskCache.remove(key);
-    }
-
-    /**
-     * 按key移除缓存
+     * 按key在内存缓存中移除
      *
      * @param key
      * @param <T>
      * @return
      */
-    public <T extends Serializable> T removeCache(@NonNull String key) {
+    public <T extends Serializable> T removeMemoryCache(@NonNull String key) {
         return (T) mLruCache.remove(key);
     }
 
     /**
-     * 移除所有lru内存缓存
+     * 移除磁盘缓存
+     *
+     * @param key
+     * @return
      */
-    public void removeAllCache() {
+    public <T extends Serializable> T removeDiskCache(@NonNull String key) {
+        Object cache = mDiskCache.getAsObject(key);
+        if (cache != null) {
+            mDiskCache.remove(key);
+            return (T) cache;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 移除内存缓存和磁盘缓存
+     */
+    public void removeCache(@NonNull String key) {
+        removeMemoryCache(key);
+        removeDiskCache(key);
+    }
+
+    /**
+     * 移除所有Lru内存缓存
+     */
+    public void removeAllMemoryCache() {
         mLruCache.evictAll();
+    }
+
+    /**
+     * 移除所有Disk磁盘缓存
+     */
+    public void removeAllDiskCache() {
+        mDiskCache.clear();
     }
 }

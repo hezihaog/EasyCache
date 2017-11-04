@@ -3,7 +3,9 @@ package com.hzh.easy.cache;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import com.hzh.easy.cache.base.CacheFactory;
 import com.hzh.easy.cache.base.CacheOperate;
+import com.hzh.easy.cache.config.CacheConfig;
 
 public class CacheManager {
     private CacheManager() {
@@ -17,6 +19,11 @@ public class CacheManager {
         return SingletonHolder.instance;
     }
 
+    /**
+     * 初始化
+     *
+     * @param context
+     */
     public void init(Context context) {
         if (context == null) {
             throw new NullPointerException("context 不能为空");
@@ -27,6 +34,13 @@ public class CacheManager {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        CacheOperate.init(context, versionCode);
+        CacheOperate.init(CacheConfig.newBuilder(context, versionCode).build());
+    }
+
+    /**
+     * 移除所有内存中的缓存实例
+     */
+    public void removeAllCache() {
+        CacheFactory.removeAllCache();
     }
 }
