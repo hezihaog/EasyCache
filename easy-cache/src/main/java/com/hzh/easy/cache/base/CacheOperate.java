@@ -1,8 +1,6 @@
 package com.hzh.easy.cache.base;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.LruCache;
 
 import com.hzh.easy.cache.config.CacheConfig;
@@ -81,11 +79,11 @@ public class CacheOperate {
      * @param list
      * @param <T>
      */
-    public <T extends Serializable> void putListData(@NonNull String key, @NonNull List<T> list) {
+    public <T extends Serializable> void putListData(String key, List<T> list) {
         putListData(key, list, -1);
     }
 
-    public <T extends Serializable> void putListData(@NonNull String key, @NonNull List<T> list, @Nullable int saveTime) {
+    public <T extends Serializable> void putListData(String key, List<T> list, int saveTime) {
         ArrayList<T> dataList = new ArrayList<T>(list);
         mLruCache.put(key, list);
         mDiskCache.put(key, dataList, saveTime);
@@ -98,11 +96,11 @@ public class CacheOperate {
      * @param data
      * @param <T>
      */
-    public <T extends Serializable> void putData(@NonNull String key, @NonNull T data) {
+    public <T extends Serializable> void putData(String key, T data) {
         putData(key, data, -1);
     }
 
-    public <T extends Serializable> void putData(@NonNull String key, @NonNull T data, @Nullable int saveTime) {
+    public <T extends Serializable> void putData(String key, T data, int saveTime) {
         mLruCache.put(key, data);
         mDiskCache.put(key, data, saveTime);
     }
@@ -114,11 +112,11 @@ public class CacheOperate {
      * @param <T>
      * @return
      */
-    public <T extends Serializable> T getData(@NonNull String key) {
+    public <T extends Serializable> T getData(String key) {
         return getData(key, null);
     }
 
-    public <T extends Serializable> T getData(@NonNull String key, @Nullable T defaultValue) {
+    public <T extends Serializable> T getData(String key, T defaultValue) {
         T result = (T) mLruCache.get(key);
         if (result == null) {
             result = (T) mDiskCache.getAsObject(key);
@@ -141,7 +139,7 @@ public class CacheOperate {
      * @param <T>
      * @return
      */
-    public <T extends Serializable> T removeMemoryCache(@NonNull String key) {
+    public <T extends Serializable> T removeMemoryCache(String key) {
         return (T) mLruCache.remove(key);
     }
 
@@ -151,7 +149,7 @@ public class CacheOperate {
      * @param key
      * @return
      */
-    public <T extends Serializable> T removeDiskCache(@NonNull String key) {
+    public <T extends Serializable> T removeDiskCache(String key) {
         Object cache = mDiskCache.getAsObject(key);
         if (cache != null) {
             mDiskCache.remove(key);
@@ -164,7 +162,7 @@ public class CacheOperate {
     /**
      * 移除内存缓存和磁盘缓存
      */
-    public void removeCache(@NonNull String key) {
+    public void removeCache(String key) {
         removeMemoryCache(key);
         removeDiskCache(key);
     }

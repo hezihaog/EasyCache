@@ -1,7 +1,5 @@
 package com.hzh.easy.cache.base;
 
-import android.support.annotation.Nullable;
-
 import com.hzh.easy.cache.interf.ICache;
 
 import java.io.Serializable;
@@ -35,9 +33,9 @@ public abstract class BaseCache<P extends BaseCacheParams> implements ICache {
         }
     }
 
-    public abstract void removeCache(@Nullable P params);
+    public abstract void removeCache(P params);
 
-    public abstract void put(@Nullable P params, Serializable target);
+    public abstract void put(P params, Serializable target);
 
-    public abstract <T extends Serializable> T get(@Nullable P params);
+    public abstract <T extends Serializable> T get(P params);
 }

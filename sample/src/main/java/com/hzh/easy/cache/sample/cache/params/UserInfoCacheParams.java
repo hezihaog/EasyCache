@@ -1,7 +1,5 @@
 package com.hzh.easy.cache.sample.cache.params;
 
-import android.support.annotation.NonNull;
-
 import com.hzh.easy.cache.base.BaseCacheParams;
 
 /**
@@ -15,7 +13,7 @@ import com.hzh.easy.cache.base.BaseCacheParams;
 public class UserInfoCacheParams extends BaseCacheParams {
     private static final String KEY_USER_ID = "userId";
 
-    public UserInfoCacheParams putUserId(@NonNull String userId) {
+    public UserInfoCacheParams putUserId(String userId) {
         return put(KEY_USER_ID, userId);
     }
 

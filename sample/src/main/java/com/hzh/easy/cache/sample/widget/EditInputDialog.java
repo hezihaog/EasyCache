@@ -2,8 +2,6 @@ package com.hzh.easy.cache.sample.widget;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.StyleRes;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,12 +29,12 @@ public class EditInputDialog extends Dialog implements View.OnClickListener {
     private OnClickListener clickListener;
     private OnDisplayChangeListener displayChangeListener;
 
-    public EditInputDialog(@NonNull Context context) {
+    public EditInputDialog(Context context) {
         super(context);
         init();
     }
 
-    protected EditInputDialog(@NonNull Context context, @StyleRes int themeResId) {
+    protected EditInputDialog(Context context, int themeResId) {
         super(context, themeResId);
         init();
     }
